@@ -9,7 +9,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f1923">
 <title>우리차 어디있지</title>
-<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -25,11 +24,10 @@
     --text2: #8fafc9;
     --text3: #4a6580;
     --success: #4caf7d;
-    --warn: #ffb74d;
-    --danger: #ef5350;
     --card-border: rgba(79,195,247,0.15);
     --radius: 16px;
     --radius-sm: 10px;
+    --benz-logo: url('https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Benz_Logo_2010.svg');
   }
 
   html, body {
@@ -47,7 +45,6 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Background grid texture */
   body::before {
     content: '';
     position: fixed;
@@ -66,399 +63,85 @@
     max-width: 430px;
     margin: 0 auto;
     width: 100%;
-    padding: 0 20px 32px;
+    padding: 0 20px 40px;
     flex: 1;
   }
 
   /* Header */
-  .header {
-    padding: 56px 0 24px;
-    text-align: center;
+  .header { padding: 60px 0 30px; text-align: center; }
+  .header-logo {
+    width: 64px; height: 64px; margin: 0 auto 16px;
+    background-image: var(--benz-logo);
+    background-size: contain; background-repeat: no-repeat; background-position: center;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
   }
-
-  .header-icon {
-    font-size: 40px;
-    display: block;
-    margin-bottom: 12px;
-    filter: drop-shadow(0 0 16px rgba(79,195,247,0.4));
-  }
-
-  .header h1 {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .header p {
-    font-size: 13px;
-    color: var(--text3);
-    margin-top: 4px;
-    font-weight: 300;
-  }
-
-  /* Status card */
-  .status-card {
-    background: var(--bg2);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .status-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.6;
-  }
-
-  .status-label {
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 10px;
-  }
-
-  .status-empty {
-    font-size: 15px;
-    color: var(--text3);
-    font-weight: 300;
-    padding: 8px 0;
-  }
-
-  .status-location {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1.2;
-    display: none;
-  }
-
-  .status-sub {
-    font-size: 13px;
-    color: var(--text2);
-    margin-top: 4px;
-    display: none;
-  }
-
-  .status-meta {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .status-meta.show { display: flex; }
-
-  .meta-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 6px var(--success);
-    flex-shrink: 0;
-  }
-
-  .meta-text {
-    font-size: 12px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-  }
-
-  .meta-who {
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--accent);
-    background: rgba(79,195,247,0.1);
-    border: 1px solid rgba(79,195,247,0.2);
-    border-radius: 20px;
-    padding: 3px 10px;
-  }
-
-  /* Section */
-  .section-label {
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 12px;
-  }
-
-  /* Zone grid */
-  .zones {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .zone-btn {
-    background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: var(--radius-sm);
-    padding: 16px 14px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  .zone-btn:active { transform: scale(0.97); }
-
-  .zone-btn:hover {
-    border-color: rgba(79,195,247,0.3);
-    background: var(--bg3);
-  }
-
-  .zone-btn.selected {
-    border-color: var(--accent);
-    background: rgba(79,195,247,0.08);
-    box-shadow: 0 0 0 1px rgba(79,195,247,0.3), inset 0 0 20px rgba(79,195,247,0.05);
-  }
-
-  .zone-emoji { font-size: 18px; margin-bottom: 8px; display: block; }
-
-  .zone-floor {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-  }
-
-  .zone-btn.selected .zone-floor { color: var(--accent); }
-
-  .zone-desc {
-    font-size: 11px;
-    color: var(--text3);
-    display: block;
-    margin-top: 2px;
-  }
-
-  .zone-btn.selected .zone-desc { color: rgba(79,195,247,0.7); }
-
-  /* Name input */
-  .name-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    align-items: center;
-  }
-
-  .name-label {
-    font-size: 13px;
-    color: var(--text2);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .name-input {
-    flex: 1;
-    background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'Noto Sans KR', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .name-input:focus {
-    border-color: rgba(79,195,247,0.4);
-  }
-
-  .name-input::placeholder { color: var(--text3); }
-
-  /* Save button */
-  .save-btn {
-    width: 100%;
-    padding: 16px;
-    background: var(--accent);
-    color: #0f1923;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-    margin-bottom: 10px;
-    letter-spacing: -0.3px;
-  }
-
-  .save-btn:hover { background: var(--accent2); }
-  .save-btn:active { transform: scale(0.98); }
-
-  .save-btn:disabled {
-    background: var(--bg3);
-    color: var(--text3);
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Share button */
-  .share-btn {
-    width: 100%;
-    padding: 13px;
-    background: transparent;
-    color: var(--text3);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-    margin-bottom: 10px;
-  }
-
-  .share-btn:hover {
-    color: var(--text2);
-    border-color: rgba(255,255,255,0.15);
-  }
-
-  /* History */
-  .history-section {
-    margin-top: 28px;
-  }
-
-  .history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .history-item {
-    background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .history-floor {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-    flex: 1;
-  }
-
-  .history-who {
-    font-size: 11px;
-    color: var(--accent);
-    background: rgba(79,195,247,0.1);
-    border-radius: 10px;
-    padding: 2px 8px;
-  }
-
-  .history-time {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* Loading */
-  .loading {
-    text-align: center;
-    padding: 20px;
-    color: var(--text3);
-    font-size: 14px;
-  }
-
-  .spinner {
-    width: 20px; height: 20px;
-    border: 2px solid var(--bg3);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 8px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: calc(24px + env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--bg3);
-    border: 1px solid rgba(79,195,247,0.2);
-    color: var(--text);
-    padding: 12px 20px;
-    border-radius: 40px;
-    font-size: 13px;
-    white-space: nowrap;
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 100;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
+  .header h1 { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .header p { font-size: 14px; color: var(--text3); margin-top: 6px; font-weight: 300; }
 
   /* Connection status */
-  .conn-status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 0 16px;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .conn-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--text3);
-  }
-
+  .conn-status { display: flex; align-items: center; justify-content: center; gap: 6px; padding-bottom: 20px; font-size: 11px; color: var(--text3); }
+  .conn-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); }
   .conn-dot.online { background: var(--success); box-shadow: 0 0 4px var(--success); }
-  .conn-dot.offline { background: var(--danger); }
 
-  /* Install banner */
-  .install-banner {
-    background: rgba(79,195,247,0.08);
-    border: 1px solid rgba(79,195,247,0.2);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    display: none;
+  /* Current status card */
+  .status-card {
+    background: var(--bg2); border: 1px solid var(--card-border); border-radius: var(--radius);
+    padding: 24px 20px; margin-bottom: 30px; position: relative; overflow: hidden;
   }
-
-  .install-banner.show { display: block; }
-  .install-banner p { font-size: 12px; color: var(--text2); line-height: 1.6; }
-  .install-banner strong { color: var(--accent); font-weight: 500; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  .status-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
   }
+  .status-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 12px; }
+  .status-location { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1.2; }
+  .status-meta { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); }
+  .meta-text { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .meta-who { margin-left: auto; font-size: 11px; color: var(--accent); background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.2); border-radius: 20px; padding: 3px 10px; }
 
-  .app > * { animation: fadeIn 0.4s ease both; }
-  .header { animation-delay: 0s; }
-  .status-card { animation-delay: 0.05s; }
-  .zones { animation-delay: 0.1s; }
+  /* Zone grid */
+  .section-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 12px; }
+  .zones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .zone-btn {
+    background: var(--bg2); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-sm);
+    padding: 18px 14px; cursor: pointer; text-align: left; transition: all 0.2s; position: relative;
+  }
+  .zone-btn.selected { border-color: var(--accent); background: rgba(79,195,247,0.08); box-shadow: 0 0 0 1px rgba(79,195,247,0.3); }
+  .zone-logo-icon {
+    width: 20px; height: 20px; margin-bottom: 10px;
+    background-image: var(--benz-logo); background-size: contain; background-repeat: no-repeat; background-position: center;
+    filter: brightness(0) invert(1); opacity: 0.5; display: block;
+  }
+  .zone-btn.selected .zone-logo-icon { filter: none; opacity: 1; }
+  .zone-floor { font-size: 16px; font-weight: 700; color: var(--text); display: block; }
+  .zone-desc { font-size: 12px; color: var(--text3); display: block; margin-top: 3px; }
+
+  /* Input and Save Button */
+  .name-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+  .name-input { flex: 1; background: var(--bg2); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-sm); padding: 14px; color: var(--text); font-size: 15px; outline: none; }
+  .save-btn { width: 100%; padding: 18px; background: var(--accent); color: #0f1923; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; cursor: pointer; }
+  .save-btn:disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
+
+  /* History */
+  .history-section { margin-top: 40px; }
+  .history-item { background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .history-floor { font-size: 14px; font-weight: 500; color: var(--text2); flex: 1; }
+  .history-who { font-size: 11px; color: var(--accent); background: rgba(79,195,247,0.1); border-radius: 12px; padding: 2px 8px; }
+  .history-time { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+  /* Feedback UI */
+  .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bg3); color: var(--text); padding: 14px 24px; border-radius: 40px; font-size: 14px; transition: transform 0.3s; z-index: 100; border: 1px solid var(--accent); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .spinner { width: 24px; height: 24px; border: 3px solid var(--bg3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <span class="header-icon">🚗</span>
-    <h1>우리차 어디있지?</h1>
-    <p>실시간으로 공유되는 주차 위치</p>
+    <div class="header-logo"></div>
+    <h1>벤츠 어디있지?</h1>
+    <p>우리집 실시간 주차 위치</p>
   </div>
 
   <div class="conn-status">
@@ -466,76 +149,59 @@
     <span id="connText">연결 중...</span>
   </div>
 
-  <!-- Current status -->
   <div class="status-card">
     <div class="status-label">현재 주차 위치</div>
-    <div id="loadingStatus" class="loading">
-      <div class="spinner"></div>
-      불러오는 중...
-    </div>
-    <div id="emptyStatus" class="status-empty" style="display:none;">아직 기록된 위치가 없어요</div>
-    <div id="statusLocation" class="status-location"></div>
-    <div id="statusSub" class="status-sub"></div>
-    <div class="status-meta" id="statusMeta">
+    <div id="loadingStatus"><div class="spinner"></div></div>
+    <div id="emptyStatus" style="display:none; text-align:center; color:var(--text3);">기록된 위치가 없습니다</div>
+    <div id="statusLocation" class="status-location" style="display:none;"></div>
+    <div class="status-meta" id="statusMeta" style="display:none;">
       <div class="meta-dot"></div>
       <span class="meta-text" id="statusTime"></span>
       <span class="meta-who" id="statusWho"></span>
     </div>
   </div>
 
-  <!-- Install hint for iOS -->
-  <div class="install-banner" id="installBanner">
-    <p>📱 <strong>홈 화면에 추가하기:</strong> Safari 하단 공유 버튼 → "홈 화면에 추가" 탭하면 앱처럼 사용할 수 있어요!</p>
-  </div>
-
-  <!-- Zone selection -->
-  <div class="section-label">주차 위치 선택</div>
+  <div class="section-label">위치 업데이트</div>
   <div class="zones">
-    <button class="zone-btn" onclick="selectZone(this,'B2-정문')" data-zone="B2-정문">
-      <span class="zone-emoji">🅿️</span>
+    <button class="zone-btn" onclick="selectZone(this,'B2-정문')">
+      <span class="zone-logo-icon"></span>
       <span class="zone-floor">지하 2층</span>
       <span class="zone-desc">정문쪽</span>
     </button>
-    <button class="zone-btn" onclick="selectZone(this,'B2-분리수거')" data-zone="B2-분리수거">
-      <span class="zone-emoji">♻️</span>
+    <button class="zone-btn" onclick="selectZone(this,'B2-분리수거')">
+      <span class="zone-logo-icon"></span>
       <span class="zone-floor">지하 2층</span>
-      <span class="zone-desc">분리수거장쪽</span>
+      <span class="zone-desc">분리수거쪽</span>
     </button>
-    <button class="zone-btn" onclick="selectZone(this,'B3')" data-zone="B3">
-      <span class="zone-emoji">🅿️</span>
+    <button class="zone-btn" onclick="selectZone(this,'B3')">
+      <span class="zone-logo-icon"></span>
       <span class="zone-floor">지하 3층</span>
-      <span class="zone-desc">&nbsp;</span>
+      <span class="zone-desc">중앙</span>
     </button>
-    <button class="zone-btn" onclick="selectZone(this,'B4')" data-zone="B4">
-      <span class="zone-emoji">🅿️</span>
+    <button class="zone-btn" onclick="selectZone(this,'B4')">
+      <span class="zone-logo-icon"></span>
       <span class="zone-floor">지하 4층</span>
-      <span class="zone-desc">&nbsp;</span>
+      <span class="zone-desc">여유공간</span>
     </button>
   </div>
 
   <div class="name-row">
-    <span class="name-label">기록자</span>
-    <input class="name-input" type="text" id="nameInput" placeholder="이름 입력 (예: 남편, 아내)" maxlength="10">
+    <input class="name-input" type="text" id="nameInput" placeholder="이름 (남편/아내)" maxlength="10">
   </div>
 
   <button class="save-btn" id="saveBtn" onclick="saveParking()" disabled>주차 위치 기록하기</button>
-  <button class="share-btn" onclick="shareApp()">🔗 아내에게 링크 공유하기</button>
 
-  <!-- History -->
   <div class="history-section">
-    <div class="section-label">최근 기록</div>
-    <div class="history-list" id="historyList">
-      <div class="loading"><div class="spinner"></div></div>
-    </div>
+    <div class="section-label">최근 주차 기록</div>
+    <div class="history-list" id="historyList"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, set, onValue, push, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getDatabase, ref, set, onValue, push, query, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAICyeJ9vNH6qAGr5FljIEr6xaZq1EZYwo",
@@ -549,98 +215,68 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const zoneNames = { 'B2-정문': '지하 2층 (정문쪽)', 'B2-분리수거': '지하 2층 (분리수거)', 'B3': '지하 3층', 'B4': '지하 4층' };
 
-  const zoneNames = {
-    'B2-정문': '지하 2층 (정문쪽)',
-    'B2-분리수거': '지하 2층 (분리수거장쪽)',
-    'B3': '지하 3층',
-    'B4': '지하 4층'
-  };
-
-  // Connection status
-  const connRef = ref(db, '.info/connected');
-  onValue(connRef, snap => {
-    const online = snap.val();
-    document.getElementById('connDot').className = 'conn-dot ' + (online ? 'online' : 'offline');
-    document.getElementById('connText').textContent = online ? '실시간 연결됨' : '오프라인';
-  });
-
-  // Listen to current parking
-  const currentRef = ref(db, 'current');
-  onValue(currentRef, snap => {
+  // Sync Current Data
+  onValue(ref(db, 'current'), snap => {
     document.getElementById('loadingStatus').style.display = 'none';
     const data = snap.val();
     if (!data) {
       document.getElementById('emptyStatus').style.display = 'block';
-      document.getElementById('statusLocation').style.display = 'none';
-      document.getElementById('statusSub').style.display = 'none';
-      document.getElementById('statusMeta').classList.remove('show');
     } else {
       document.getElementById('emptyStatus').style.display = 'none';
       document.getElementById('statusLocation').style.display = 'block';
+      document.getElementById('statusMeta').style.display = 'flex';
       document.getElementById('statusLocation').textContent = zoneNames[data.zone] || data.zone;
-      document.getElementById('statusSub').style.display = 'none';
-      document.getElementById('statusMeta').classList.add('show');
       const d = new Date(data.time);
-      document.getElementById('statusTime').textContent =
-        d.toLocaleDateString('ko-KR',{month:'long',day:'numeric'}) + ' ' +
-        d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('statusWho').textContent = data.who || '기록됨';
+      document.getElementById('statusTime').textContent = (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('statusWho').textContent = data.who || '가족';
     }
   });
 
-  // Listen to history
-  const histRef = query(ref(db, 'history'), orderByChild('time'), limitToLast(5));
-  onValue(histRef, snap => {
+  // Sync History List
+  onValue(query(ref(db, 'history'), limitToLast(5)), snap => {
     const list = document.getElementById('historyList');
     const items = [];
-    snap.forEach(child => items.push(child.val()));
-    items.reverse();
-    if (items.length === 0) {
-      list.innerHTML = '<div style="font-size:13px;color:var(--text3);text-align:center;padding:12px 0;">아직 기록이 없어요</div>';
-      return;
-    }
-    list.innerHTML = items.map(item => {
-      const d = new Date(item.time);
-      const timeStr = d.toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'}) + ' ' +
-        d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      return `<div class="history-item">
+    snap.forEach(c => items.push(c.val()));
+    list.innerHTML = items.reverse().map(item => `
+      <div class="history-item">
         <span class="history-floor">${zoneNames[item.zone]||item.zone}</span>
         <span class="history-who">${item.who||''}</span>
-        <span class="history-time">${timeStr}</span>
-      </div>`;
-    }).join('');
+        <span class="history-time">${new Date(item.time).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span>
+      </div>
+    `).join('');
   });
 
-  // Save parking
+  // Connection State
+  onValue(ref(db, '.info/connected'), snap => {
+    document.getElementById('connDot').className = 'conn-dot ' + (snap.val() ? 'online' : '');
+    document.getElementById('connText').textContent = snap.val() ? '실시간 동기화 중' : '오프라인 상태';
+  });
+
+  // Save Function
   window.saveParking = async function() {
     if (!window._selectedZone) return;
-    const who = document.getElementById('nameInput').value.trim() || '기록자';
-    const data = { zone: window._selectedZone, time: new Date().toISOString(), who };
+    const data = { 
+        zone: window._selectedZone, 
+        time: new Date().toISOString(), 
+        who: document.getElementById('nameInput').value.trim() || '가족' 
+    };
     try {
-      await set(ref(db, 'current'), data);
-      await push(ref(db, 'history'), data);
-      showToast('✓ 주차 위치가 저장됐어요!');
-      document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
-      window._selectedZone = null;
-      document.getElementById('saveBtn').disabled = true;
+        await set(ref(db, 'current'), data);
+        await push(ref(db, 'history'), data);
+        showToast('✅ 주차 위치가 업데이트되었습니다.');
+        document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
+        window._selectedZone = null;
+        document.getElementById('saveBtn').disabled = true;
     } catch(e) {
-      showToast('저장 실패. 인터넷 연결을 확인해주세요.');
+        showToast('⚠️ 연결이 불안정합니다.');
     }
   };
-
-  // iOS install hint
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.navigator.standalone;
-  if (isIOS && !isStandalone) {
-    document.getElementById('installBanner').classList.add('show');
-  }
 </script>
 
 <script>
-  let selectedZone = null;
   window._selectedZone = null;
-
   function selectZone(btn, zone) {
     document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -648,20 +284,11 @@
     document.getElementById('saveBtn').disabled = false;
   }
 
-  function shareApp() {
-    const url = window.location.href;
-    if (navigator.share) {
-      navigator.share({ title: '우리차 어디있지?', text: '우리 주차 위치 공유 앱이에요!', url });
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(() => showToast('링크 복사됨! 아내에게 보내주세요 💌'));
-    }
-  }
-
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    setTimeout(() => t.classList.remove('show'), 2500);
   }
 </script>
 </body>
