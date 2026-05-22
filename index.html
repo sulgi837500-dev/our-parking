@@ -24,6 +24,7 @@
     --text2: #8fafc9;
     --text3: #4a6580;
     --success: #4caf7d;
+    --warn: #ff7043;
     --card-border: rgba(79,195,247,0.15);
     --radius: 16px;
     --radius-sm: 10px;
@@ -80,8 +81,9 @@
 
   /* Connection status */
   .conn-status { display: flex; align-items: center; justify-content: center; gap: 6px; padding-bottom: 20px; font-size: 11px; color: var(--text3); }
-  .conn-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); }
+  .conn-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); transition: background 0.3s; }
   .conn-dot.online { background: var(--success); box-shadow: 0 0 4px var(--success); }
+  .conn-dot.error { background: var(--warn); box-shadow: 0 0 4px var(--warn); }
 
   /* Current status card */
   .status-card {
@@ -92,12 +94,16 @@
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
   }
-  .status-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 12px; }
+  .status-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .status-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+  .refresh-btn { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; }
+  .refresh-btn:active { color: var(--accent); }
   .status-location { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1.2; }
   .status-meta { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
   .meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); }
   .meta-text { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
   .meta-who { margin-left: auto; font-size: 11px; color: var(--accent); background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.2); border-radius: 20px; padding: 3px 10px; }
+  .error-msg { font-size: 13px; color: var(--warn); line-height: 1.5; }
 
   /* Zone grid */
   .section-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 12px; }
@@ -122,6 +128,11 @@
   .save-btn { width: 100%; padding: 18px; background: var(--accent); color: #0f1923; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; cursor: pointer; }
   .save-btn:disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
 
+  /* Share row */
+  .share-row { margin-top: 18px; }
+  .share-btn { width: 100%; padding: 14px; background: transparent; color: var(--accent); border: 1px solid rgba(79,195,247,0.3); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; }
+  .share-btn:active { background: rgba(79,195,247,0.08); }
+
   /* History */
   .history-section { margin-top: 40px; }
   .history-item { background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -129,11 +140,22 @@
   .history-who { font-size: 11px; color: var(--accent); background: rgba(79,195,247,0.1); border-radius: 12px; padding: 2px 8px; }
   .history-time { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
 
+  /* Setup screen */
+  .setup { text-align: center; padding: 10px 0 40px; }
+  .setup-card { background: var(--bg2); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 28px 22px; }
+  .setup-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .setup-card p { font-size: 14px; color: var(--text2); line-height: 1.7; font-weight: 300; }
+  .setup-btn { width: 100%; padding: 18px; margin-top: 22px; background: var(--accent); color: #0f1923; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; cursor: pointer; }
+  .setup-btn:disabled { background: var(--bg3); color: var(--text3); }
+  .setup-note { font-size: 12px; color: var(--text3); margin-top: 18px; line-height: 1.6; }
+
   /* Feedback UI */
-  .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bg3); color: var(--text); padding: 14px 24px; border-radius: 40px; font-size: 14px; transition: transform 0.3s; z-index: 100; border: 1px solid var(--accent); }
+  .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bg3); color: var(--text); padding: 14px 24px; border-radius: 40px; font-size: 14px; transition: transform 0.3s; z-index: 100; border: 1px solid var(--accent); max-width: 90%; text-align: center; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  .spinner { width: 24px; height: 24px; border: 3px solid var(--bg3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+  .toast.warn { border-color: var(--warn); }
+  .spinner { width: 24px; height: 24px; border: 3px solid var(--bg3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 14px auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -144,152 +166,326 @@
     <p>우리집 실시간 주차 위치</p>
   </div>
 
-  <div class="conn-status">
-    <div class="conn-dot" id="connDot"></div>
-    <span id="connText">연결 중...</span>
-  </div>
-
-  <div class="status-card">
-    <div class="status-label">현재 주차 위치</div>
-    <div id="loadingStatus"><div class="spinner"></div></div>
-    <div id="emptyStatus" style="display:none; text-align:center; color:var(--text3);">기록된 위치가 없습니다</div>
-    <div id="statusLocation" class="status-location" style="display:none;"></div>
-    <div class="status-meta" id="statusMeta" style="display:none;">
-      <div class="meta-dot"></div>
-      <span class="meta-text" id="statusTime"></span>
-      <span class="meta-who" id="statusWho"></span>
+  <!-- ============ 설정(방 만들기) 화면 ============ -->
+  <div class="setup hidden" id="setupScreen">
+    <div class="setup-card">
+      <h2>처음 오셨네요 👋</h2>
+      <p>두 분이 함께 쓸 "우리집 주차장"을 한 번만 만들면 돼요.<br>아래 버튼을 누르면 자동으로 만들어집니다.</p>
+      <button class="setup-btn" id="createRoomBtn" onclick="createRoom()">우리집 주차장 만들기</button>
+      <div id="createSpinner" class="hidden"><div class="spinner"></div></div>
+      <div class="setup-note">만들고 나면 배우자에게 보낼 <b>초대 링크</b>가 나와요.<br>가입·로그인 필요 없습니다.</div>
     </div>
   </div>
 
-  <div class="section-label">위치 업데이트</div>
-  <div class="zones">
-    <button class="zone-btn" onclick="selectZone(this,'B2-정문')">
-      <span class="zone-logo-icon"></span>
-      <span class="zone-floor">지하 2층</span>
-      <span class="zone-desc">정문쪽</span>
-    </button>
-    <button class="zone-btn" onclick="selectZone(this,'B2-분리수거')">
-      <span class="zone-logo-icon"></span>
-      <span class="zone-floor">지하 2층</span>
-      <span class="zone-desc">분리수거쪽</span>
-    </button>
-    <button class="zone-btn" onclick="selectZone(this,'B3')">
-      <span class="zone-logo-icon"></span>
-      <span class="zone-floor">지하 3층</span>
-      <span class="zone-desc">중앙</span>
-    </button>
-    <button class="zone-btn" onclick="selectZone(this,'B4')">
-      <span class="zone-logo-icon"></span>
-      <span class="zone-floor">지하 4층</span>
-      <span class="zone-desc">여유공간</span>
-    </button>
-  </div>
+  <!-- ============ 메인 화면 ============ -->
+  <div id="mainScreen" class="hidden">
+    <div class="conn-status">
+      <div class="conn-dot" id="connDot"></div>
+      <span id="connText">연결 중...</span>
+    </div>
 
-  <div class="name-row">
-    <input class="name-input" type="text" id="nameInput" placeholder="이름 (남편/아내)" maxlength="10">
-  </div>
+    <div class="status-card">
+      <div class="status-top">
+        <span class="status-label">현재 주차 위치</span>
+        <button class="refresh-btn" onclick="fetchData(true)" title="새로고침">⟳</button>
+      </div>
+      <div id="loadingStatus"><div class="spinner"></div></div>
+      <div id="emptyStatus" class="hidden" style="text-align:center; color:var(--text3); padding:8px 0;">기록된 위치가 없습니다</div>
+      <div id="errorStatus" class="error-msg hidden"></div>
+      <div id="statusLocation" class="status-location hidden"></div>
+      <div class="status-meta hidden" id="statusMeta">
+        <div class="meta-dot"></div>
+        <span class="meta-text" id="statusTime"></span>
+        <span class="meta-who" id="statusWho"></span>
+      </div>
+    </div>
 
-  <button class="save-btn" id="saveBtn" onclick="saveParking()" disabled>주차 위치 기록하기</button>
+    <div class="section-label">위치 업데이트</div>
+    <div class="zones">
+      <button class="zone-btn" onclick="selectZone(this,'B2-정문')">
+        <span class="zone-logo-icon"></span>
+        <span class="zone-floor">지하 2층</span>
+        <span class="zone-desc">정문쪽</span>
+      </button>
+      <button class="zone-btn" onclick="selectZone(this,'B2-분리수거')">
+        <span class="zone-logo-icon"></span>
+        <span class="zone-floor">지하 2층</span>
+        <span class="zone-desc">분리수거쪽</span>
+      </button>
+      <button class="zone-btn" onclick="selectZone(this,'B3')">
+        <span class="zone-logo-icon"></span>
+        <span class="zone-floor">지하 3층</span>
+        <span class="zone-desc">중앙</span>
+      </button>
+      <button class="zone-btn" onclick="selectZone(this,'B4')">
+        <span class="zone-logo-icon"></span>
+        <span class="zone-floor">지하 4층</span>
+        <span class="zone-desc">여유공간</span>
+      </button>
+    </div>
 
-  <div class="history-section">
-    <div class="section-label">최근 주차 기록</div>
-    <div class="history-list" id="historyList"></div>
+    <div class="name-row">
+      <input class="name-input" type="text" id="nameInput" placeholder="이름 (남편/아내)" maxlength="10">
+    </div>
+
+    <button class="save-btn" id="saveBtn" onclick="saveParking()" disabled>주차 위치 기록하기</button>
+
+    <div class="share-row">
+      <button class="share-btn" onclick="shareRoom()">📲 배우자에게 초대 링크 보내기</button>
+    </div>
+
+    <div class="history-section">
+      <div class="section-label">최근 주차 기록</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, set, onValue, push, query, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+<script>
+  /* =========================================================
+     우리집 주차 위치 공유 앱
+     - 저장소: jsonstorage.net (무료, 가입/로그인 불필요)
+     - 방(room) 정보는 이 폰의 localStorage에 저장됨
+     - 초대 링크로 두 폰이 같은 방을 공유
+     ========================================================= */
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAICyeJ9vNH6qAGr5FljIEr6xaZq1EZYwo",
-    authDomain: "our-parking-dd786.firebaseapp.com",
-    databaseURL: "https://our-parking-dd786-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "our-parking-dd786",
-    storageBucket: "our-parking-dd786.firebasestorage.app",
-    messagingSenderId: "651872295634",
-    appId: "1:651872295634:web:12d6b98fa1a3ae1f006b0b"
+  const API_BASE = 'https://api.jsonstorage.net/v1/json';
+  const STORAGE_KEY = 'benz_parking_room';   // localStorage 키
+  const POLL_MS = 5000;                       // 자동 새로고침 간격(ms)
+
+  const zoneNames = {
+    'B2-정문': '지하 2층 (정문쪽)',
+    'B2-분리수거': '지하 2층 (분리수거)',
+    'B3': '지하 3층',
+    'B4': '지하 4층'
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const zoneNames = { 'B2-정문': '지하 2층 (정문쪽)', 'B2-분리수거': '지하 2층 (분리수거)', 'B3': '지하 3층', 'B4': '지하 4층' };
+  let roomPath = null;       // "userId/itemId"
+  let selectedZone = null;
+  let pollTimer = null;
+  let lastData = { current: null, history: [] };
 
-  // Sync Current Data
-  onValue(ref(db, 'current'), snap => {
-    document.getElementById('loadingStatus').style.display = 'none';
-    const data = snap.val();
-    if (!data) {
-      document.getElementById('emptyStatus').style.display = 'block';
-    } else {
-      document.getElementById('emptyStatus').style.display = 'none';
-      document.getElementById('statusLocation').style.display = 'block';
-      document.getElementById('statusMeta').style.display = 'flex';
-      document.getElementById('statusLocation').textContent = zoneNames[data.zone] || data.zone;
-      const d = new Date(data.time);
-      document.getElementById('statusTime').textContent = (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('statusWho').textContent = data.who || '가족';
+  /* ---------- 유틸 ---------- */
+  function $(id){ return document.getElementById(id); }
+
+  function showToast(msg, warn){
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (warn ? ' warn' : '');
+    setTimeout(() => { t.className = 'toast' + (warn ? ' warn' : ''); }, 2800);
+  }
+
+  function getShareLink(){
+    const base = location.origin + location.pathname;
+    return base + '?room=' + encodeURIComponent(btoa(roomPath));
+  }
+
+  /* ---------- 시작 ---------- */
+  function init(){
+    // 1) 초대 링크로 들어온 경우 (?room=...)
+    const params = new URLSearchParams(location.search);
+    const roomParam = params.get('room');
+    if (roomParam) {
+      try {
+        roomPath = atob(decodeURIComponent(roomParam));
+        localStorage.setItem(STORAGE_KEY, roomPath);
+        // 주소창에서 ?room 제거 (깔끔하게)
+        history.replaceState({}, '', location.origin + location.pathname);
+      } catch(e) { /* 잘못된 링크는 무시 */ }
     }
+
+    // 2) 저장된 방 확인
+    if (!roomPath) {
+      roomPath = localStorage.getItem(STORAGE_KEY);
+    }
+
+    if (roomPath) {
+      enterMainScreen();
+    } else {
+      $('setupScreen').classList.remove('hidden');
+    }
+  }
+
+  /* ---------- 방 만들기 (최초 1회) ---------- */
+  async function createRoom(){
+    const btn = $('createRoomBtn');
+    btn.disabled = true;
+    $('createSpinner').classList.remove('hidden');
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ current: null, history: [] })
+      });
+      if (!res.ok) throw new Error('서버 응답 ' + res.status);
+      const json = await res.json();
+      // json.uri = ".../v1/json/{userId}/{itemId}"
+      roomPath = json.uri.split('/v1/json/')[1];
+      localStorage.setItem(STORAGE_KEY, roomPath);
+      $('setupScreen').classList.add('hidden');
+      enterMainScreen();
+      setTimeout(() => shareRoom(), 600); // 만들자마자 공유 유도
+    } catch(e) {
+      btn.disabled = false;
+      $('createSpinner').classList.add('hidden');
+      showToast('⚠️ 만들기 실패: ' + e.message, true);
+    }
+  }
+
+  /* ---------- 메인 화면 진입 ---------- */
+  function enterMainScreen(){
+    $('mainScreen').classList.remove('hidden');
+    fetchData();
+    startPolling();
+  }
+
+  function startPolling(){
+    stopPolling();
+    pollTimer = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchData();
+    }, POLL_MS);
+  }
+  function stopPolling(){ if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
+
+  // 화면을 다시 켤 때 즉시 새로고침
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') fetchData();
   });
 
-  // Sync History List
-  onValue(query(ref(db, 'history'), limitToLast(5)), snap => {
-    const list = document.getElementById('historyList');
-    const items = [];
-    snap.forEach(c => items.push(c.val()));
-    list.innerHTML = items.reverse().map(item => `
+  /* ---------- 데이터 읽기 ---------- */
+  async function fetchData(manual){
+    if (!roomPath) return;
+    try {
+      const res = await fetch(API_BASE + '/' + roomPath + '?t=' + Date.now());
+      if (!res.ok) throw new Error('서버 응답 ' + res.status);
+      const data = await res.json();
+      lastData = {
+        current: data.current || null,
+        history: Array.isArray(data.history) ? data.history : []
+      };
+      setConn(true);
+      render();
+      if (manual) showToast('🔄 새로고침 완료');
+    } catch(e) {
+      setConn(false);
+      $('loadingStatus').classList.add('hidden');
+      // 데이터가 한 번도 안 들어왔을 때만 에러 문구 표시
+      if (!lastData.current) {
+        $('errorStatus').classList.remove('hidden');
+        $('errorStatus').textContent = '⚠️ 위치를 불러오지 못했어요. 인터넷 연결을 확인하고 ⟳ 를 눌러보세요. (' + e.message + ')';
+        $('emptyStatus').classList.add('hidden');
+      }
+    }
+  }
+
+  function setConn(online){
+    $('connDot').className = 'conn-dot ' + (online ? 'online' : 'error');
+    $('connText').textContent = online ? '실시간 동기화 중' : '오프라인 상태';
+  }
+
+  /* ---------- 화면 그리기 ---------- */
+  function render(){
+    $('loadingStatus').classList.add('hidden');
+    $('errorStatus').classList.add('hidden');
+
+    const cur = lastData.current;
+    if (!cur) {
+      $('emptyStatus').classList.remove('hidden');
+      $('statusLocation').classList.add('hidden');
+      $('statusMeta').classList.add('hidden');
+    } else {
+      $('emptyStatus').classList.add('hidden');
+      $('statusLocation').classList.remove('hidden');
+      $('statusMeta').classList.remove('hidden');
+      $('statusLocation').textContent = zoneNames[cur.zone] || cur.zone;
+      const d = new Date(cur.time);
+      $('statusTime').textContent = (d.getMonth()+1) + '/' + d.getDate() + ' ' +
+        d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+      $('statusWho').textContent = cur.who || '가족';
+    }
+
+    // 최근 기록 (최신 5개)
+    const list = $('historyList');
+    const recent = lastData.history.slice(-5).reverse();
+    list.innerHTML = recent.map(item => `
       <div class="history-item">
-        <span class="history-floor">${zoneNames[item.zone]||item.zone}</span>
-        <span class="history-who">${item.who||''}</span>
+        <span class="history-floor">${zoneNames[item.zone] || item.zone}</span>
+        <span class="history-who">${item.who || ''}</span>
         <span class="history-time">${new Date(item.time).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
     `).join('');
-  });
+  }
 
-  // Connection State
-  onValue(ref(db, '.info/connected'), snap => {
-    document.getElementById('connDot').className = 'conn-dot ' + (snap.val() ? 'online' : '');
-    document.getElementById('connText').textContent = snap.val() ? '실시간 동기화 중' : '오프라인 상태';
-  });
-
-  // Save Function
-  window.saveParking = async function() {
-    if (!window._selectedZone) return;
-    const data = { 
-        zone: window._selectedZone, 
-        time: new Date().toISOString(), 
-        who: document.getElementById('nameInput').value.trim() || '가족' 
-    };
-    try {
-        await set(ref(db, 'current'), data);
-        await push(ref(db, 'history'), data);
-        showToast('✅ 주차 위치가 업데이트되었습니다.');
-        document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
-        window._selectedZone = null;
-        document.getElementById('saveBtn').disabled = true;
-    } catch(e) {
-        showToast('⚠️ 연결이 불안정합니다.');
-    }
-  };
-</script>
-
-<script>
-  window._selectedZone = null;
-  function selectZone(btn, zone) {
+  /* ---------- 구역 선택 ---------- */
+  function selectZone(btn, zone){
     document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-    window._selectedZone = zone;
-    document.getElementById('saveBtn').disabled = false;
+    selectedZone = zone;
+    $('saveBtn').disabled = false;
   }
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+  /* ---------- 위치 저장 ---------- */
+  async function saveParking(){
+    if (!selectedZone || !roomPath) return;
+    const entry = {
+      zone: selectedZone,
+      time: new Date().toISOString(),
+      who: $('nameInput').value.trim() || '가족'
+    };
+    const newData = {
+      current: entry,
+      history: [...lastData.history, entry].slice(-10) // 최근 10개만 보관
+    };
+    const btn = $('saveBtn');
+    btn.disabled = true;
+    try {
+      const res = await fetch(API_BASE + '/' + roomPath, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newData)
+      });
+      if (!res.ok) throw new Error('서버 응답 ' + res.status);
+      lastData = newData;
+      render();
+      setConn(true);
+      showToast('✅ 주차 위치가 업데이트되었습니다.');
+      document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
+      selectedZone = null;
+    } catch(e) {
+      btn.disabled = false;
+      showToast('⚠️ 저장 실패: ' + e.message + ' — 다시 눌러주세요.', true);
+    }
   }
+
+  /* ---------- 초대 링크 공유 ---------- */
+  async function shareRoom(){
+    const link = getShareLink();
+    const shareText = '우리집 벤츠 주차 위치 앱이야! 이 링크 누르면 같이 볼 수 있어 🚗\n' + link;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: '벤츠 어디있지?', text: shareText, url: link });
+        return;
+      } catch(e) { /* 사용자가 취소하면 아래 복사로 fallback */ }
+    }
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast('📋 초대 링크가 복사됐어요. 카톡에 붙여넣어 보내세요!');
+    } catch(e) {
+      // 클립보드도 막힌 경우 링크를 직접 보여줌
+      prompt('아래 링크를 복사해서 배우자에게 보내세요:', link);
+    }
+  }
+
+  /* ---------- 전역 노출 (onclick용) ---------- */
+  window.createRoom = createRoom;
+  window.fetchData = fetchData;
+  window.selectZone = selectZone;
+  window.saveParking = saveParking;
+  window.shareRoom = shareRoom;
+
+  init();
 </script>
 </body>
 </html>
